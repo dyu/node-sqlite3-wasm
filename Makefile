@@ -52,7 +52,7 @@ dist/node-sqlite3-wasm.js: $(OBJECT_FILES) $(EXPORTED_FUNCS_JSON) $(JS_PRE_FILES
 	mkdir -p dist
 	emcc $(LINK_FLAGS) $(EM_FLAGS) $(OBJECT_FILES) --js-library $(JS_LIB_FILES) \
 		$(foreach f,$(JS_PRE_FILES),--pre-js $(f)) -o $@
-	sed -i -E 's/^\}\)\(\);$$/})()();/' $@  # resolve factory
+	sed -i -E 's/^[}][)][(][)];$$/})()();/' $@  # resolve factory
 
 build/sqlite3.o: $(SQLITE_SRC_FILES)
 	mkdir -p build
