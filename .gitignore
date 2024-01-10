@@ -1,0 +1,5 @@
+build
+node_modules
+pnpm-lock.yaml
+/sqlite-src
+/test.db
