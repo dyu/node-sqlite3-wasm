@@ -21,6 +21,7 @@ SQLITE_FLAGS = \
 	-DSQLITE_DISABLE_LFS \
 	-DSQLITE_ENABLE_COLUMN_METADATA \
 	-DSQLITE_ENABLE_MATH_FUNCTIONS \
+	-DSQLITE_ENABLE_RTREE \
 	-DSQLITE_ENABLE_STAT4 \
 	-DSQLITE_ENABLE_UPDATE_DELETE_LIMIT \
 	-DSQLITE_DEFAULT_FOREIGN_KEYS=1 \
@@ -28,6 +29,8 @@ SQLITE_FLAGS = \
 	-DSQLITE_DQS=0 \
 	-DSQLITE_TEMP_STORE=3 \
 	-DSQLITE_OS_OTHER=1 \
+	-DSQLITE_ENABLE_FTS3 \
+	-DSQLITE_ENABLE_FTS4 \
 	-DSQLITE_ENABLE_FTS5
 
 EM_FLAGS = -O3 -flto
@@ -56,7 +59,7 @@ dist/node-sqlite3-wasm.js: $(OBJECT_FILES) $(EXPORTED_FUNCS_JSON) $(JS_PRE_FILES
 	mkdir -p dist
 	emcc $(LINK_FLAGS) $(EM_FLAGS) $(OBJECT_FILES) --js-library $(JS_LIB_FILES) \
 		$(foreach f,$(JS_PRE_FILES),--pre-js $(f)) -o $@
-	sed -i -E 's/^\}\)\(\);$$/})()();/' $@  # resolve factory
+	sed -i -E 's/^[}][)][(][)];$$/})()();/' $@ # resolve factory
 
 build/sqlite3.o: $(SQLITE_SRC_FILES)
 	mkdir -p build
