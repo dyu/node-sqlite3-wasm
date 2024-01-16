@@ -1,6 +1,6 @@
 {
   "name": "@dyu/node-sqlite3-wasm",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "WebAssembly port of SQLite3 for Node.js with file system access",
   "homepage": "https://github.com/dyu/node-sqlite3-wasm",
   "author": "dyu",
