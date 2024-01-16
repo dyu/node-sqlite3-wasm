@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-declare module "node-sqlite3-wasm" {
+declare module "@dyu/node-sqlite3-wasm" {
   interface RunResult {
     changes: number;
     lastInsertRowid: number | bigint;
