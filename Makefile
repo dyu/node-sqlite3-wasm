@@ -6,7 +6,7 @@ SQLITE_SRC_FILES = sqlite-src/sqlite3.c sqlite-src/sqlite3.h
 
 JS_PRE_FILES = src/api.js src/vfs-pre.js
 JS_LIB_FILES = src/vfs.js
-OBJECT_FILES = build/sqlite3.o build/vfs.o
+OBJECT_FILES = build/sqlite3.o build/vfs.o build/vfs_trace.o
 EXPORTED_FUNCS_JSON = build/exp_funcs.json
 
 SQLITE_FLAGS = \
@@ -66,6 +66,10 @@ build/sqlite3.o: $(SQLITE_SRC_FILES)
 	emcc $(EM_FLAGS) $(SQLITE_FLAGS) -c $< -o $@
 
 build/vfs.o: src/vfs.c sqlite-src/sqlite3.h
+	mkdir -p build
+	emcc $(EM_FLAGS) $(SQLITE_FLAGS) -I sqlite-src -c $< -o $@
+
+build/vfs_trace.o: src/vfs_trace.c sqlite-src/sqlite3.h
 	mkdir -p build
 	emcc $(EM_FLAGS) $(SQLITE_FLAGS) -I sqlite-src -c $< -o $@
 
