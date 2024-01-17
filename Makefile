@@ -7,16 +7,17 @@ SQLITE_SRC_FILES = sqlite-src/sqlite3.c sqlite-src/sqlite3.h
 
 JS_PRE_FILES = src/api.js src/vfs-pre.js
 JS_LIB_FILES = src/vfs.js
-OBJECT_FILES = build/sqlite3.o build/vfs.o build/vfs_trace.o
+OBJECT_FILES = build/sqlite3.o build/vfs.o
+#OBJECT_FILES = build/sqlite3.o build/vfs.o build/vfs_trace.o
 EXPORTED_FUNCS_JSON = build/exp_funcs.json
 
 SQLITE_FLAGS = \
+	-DCODEC_TYPE=CODEC_TYPE_AES256 \
 	-DSQLITE_OMIT_DEPRECATED \
 	-DSQLITE_OMIT_LOAD_EXTENSION \
 	-DSQLITE_OMIT_UTF16 \
 	-DSQLITE_OMIT_GET_TABLE \
 	-DSQLITE_OMIT_PROGRESS_CALLBACK \
-	-DSQLITE_OMIT_SHARED_CACHE \
 	-DSQLITE_OMIT_TCL_VARIABLE \
 	-DSQLITE_OMIT_DESERIALIZE \
 	-DSQLITE_DISABLE_LFS \
@@ -31,8 +32,12 @@ SQLITE_FLAGS = \
 	-DSQLITE_TEMP_STORE=3 \
 	-DSQLITE_OS_OTHER=1 \
 	-DSQLITE_ENABLE_FTS3 \
+	-DSQLITE_ENABLE_FTS3_PARENTHESIS=1 \
 	-DSQLITE_ENABLE_FTS4 \
 	-DSQLITE_ENABLE_FTS5
+#	-DSQLITE_OMIT_RANDOMNESS=1 \
+#	-DSQLITE_OMIT_SHARED_CACHE \
+#	-DSQLITE_USER_AUTHENTICATION=1 \
 
 EM_FLAGS = -O3 -flto
 
@@ -70,9 +75,9 @@ build/vfs.o: src/vfs.c sqlite-src/sqlite3.h
 	mkdir -p build
 	emcc $(EM_FLAGS) $(SQLITE_FLAGS) -I sqlite-src -c $< -o $@
 
-build/vfs_trace.o: src/vfs_trace.c sqlite-src/sqlite3.h
-	mkdir -p build
-	emcc $(EM_FLAGS) $(SQLITE_FLAGS) -I sqlite-src -c $< -o $@
+#build/vfs_trace.o: src/vfs_trace.c sqlite-src/sqlite3.h
+#	mkdir -p build
+#	emcc $(EM_FLAGS) $(SQLITE_FLAGS) -I sqlite-src -c $< -o $@
 
 $(EXPORTED_FUNCS_JSON): src/api.js
 	mkdir -p build
@@ -93,7 +98,9 @@ $(SQLITE_SRC_FILES):
 	#	<(echo $$(openssl dgst -sha3-256 sqlite-src/sqlite.zip | awk '{print $$NF}'))
 	# unpack required files
 	unzip -u sqlite-src/sqlite.zip -d sqlite-src/tmp/
-	cp $$(find sqlite-src/tmp/ -name sqlite3.h) sqlite-src/
-	cp $$(find sqlite-src/tmp/ -name sqlite3.c) sqlite-src/
+	#cp $$(find sqlite-src/tmp/ -name sqlite3.h) sqlite-src/
+	#cp $$(find sqlite-src/tmp/ -name sqlite3.c) sqlite-src/
+	cp sqlite-src/tmp/sqlite3mc_amalgamation.h sqlite-src/sqlite3.h
+	cp sqlite-src/tmp/sqlite3mc_amalgamation.c sqlite-src/sqlite3.c
 	#rm -rf sqlite-src/sqlite.zip sqlite-src/tmp
 	touch sqlite-src/sqlite3.{h,c}

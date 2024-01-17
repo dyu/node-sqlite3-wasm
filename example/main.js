@@ -3,7 +3,7 @@ const { mkdirSync, existsSync, rmSync } = require('fs');
 
 function newDatabase(path, opts) {
   const db = new Database(path, opts);
-  db.exec('PRAGMA key = 1234567812345678');
+  db.exec('PRAGMA key = 12345678123456781234567812345678');
   return db;
 }
 

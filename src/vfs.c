@@ -25,7 +25,7 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <stdio.h>
+//#include <stdio.h>
 
 #include "sqlite3.h"
 
@@ -132,13 +132,13 @@ static int nodejsCurrentTimeInt64(sqlite3_vfs *pVfs, sqlite3_int64 *piNow) {
   return SQLITE_OK;
 }
 
-int vfstrace_register(
-   const char *zTraceName,           /* Name of the newly constructed VFS */
-   const char *zOldVfsName,          /* Name of the underlying VFS */
-   int (*xOut)(const char*,void*),   /* Output routine.  ex: fputs */
-   void *pOutArg,                    /* 2nd argument to xOut.  ex: stderr */
-   int makeDefault                   /* True to make the new VFS the default */
-);
+// int vfstrace_register(
+//    const char *zTraceName,           /* Name of the newly constructed VFS */
+//    const char *zOldVfsName,          /* Name of the underlying VFS */
+//    int (*xOut)(const char*,void*),   /* Output routine.  ex: fputs */
+//    void *pOutArg,                    /* 2nd argument to xOut.  ex: stderr */
+//    int makeDefault                   /* True to make the new VFS the default */
+// );
 
 SQLITE_API int sqlite3_os_init(void) {
   static sqlite3_vfs nodejsvfs = {
@@ -163,9 +163,9 @@ SQLITE_API int sqlite3_os_init(void) {
       nodejsCurrentTimeInt64  // xCurrentTimeInt64
   };
   nodejsvfs.mxPathname = nodejs_max_path_length();
-  sqlite3_vfs_register(&nodejsvfs, 1);
-  vfstrace_register("trace",0,(int(*)(const char*,void*))fputs,stderr,1);
-  return SQLITE_OK;
+  return sqlite3_vfs_register(&nodejsvfs, 1);
+  //vfstrace_register("trace",0,(int(*)(const char*,void*))fputs,stderr,1);
+  //return SQLITE_OK;
 }
 
 SQLITE_API int sqlite3_os_end(void) { return SQLITE_OK; }

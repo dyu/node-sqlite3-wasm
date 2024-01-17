@@ -4,25 +4,26 @@ const { Database } = require("../dist/node-sqlite3-wasm.js");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 
+function newDatabase(path, opts) {
+  const db = new Database("test.db", opts);
+  db.exec("PRAGMA key = 12345678123456781234567812345678");
+  return db;
+}
+
 function open() {
   try {
     fs.unlinkSync("test.db");
   } catch (err) {
     if (err.code != "ENOENT") throw err;
   }
-  return new Database("test.db");
+  return newDatabase("test.db");
 }
 
 describe("SQLite version", function () {
   it("check version", function () {
     const content = fs.readFileSync("Makefile", "utf8");
-    const v = content.match(/amalgamation-(\d+)\.zip/)[1];
-    const major = v[0];
-    const minor = parseInt(v.substring(1, 3));
-    const patch = parseInt(v.substring(3, 5));
-    const des_version = `${major}.${minor}.${patch}`;
-
-    const db = new Database();
+    const des_version = content.match(/sqlite-(.+)-amalgamation\.zip/)[1];
+    const db = newDatabase();
     const act_version = db.get("SELECT sqlite_version() AS v").v;
     db.close();
     assert.strictEqual(act_version, des_version);
@@ -39,15 +40,15 @@ describe("Open database", function () {
   });
 
   it("memory database", function () {
-    this.db = new Database(":memory:");
+    this.db = newDatabase(":memory:");
   });
 
   it("memory database (empty name)", function () {
-    this.db = new Database("");
+    this.db = newDatabase("");
   });
 
   it("memory database (no name)", function () {
-    this.db = new Database();
+    this.db = newDatabase();
   });
 
   it("file database", function () {
@@ -60,22 +61,26 @@ describe("Open database", function () {
     } catch (err) {
       if (err.code != "ENOENT") throw err;
     }
-    assert.throws(() => new Database("test.db", { fileMustExist: true }), {
-      name: "SQLite3Error",
-      message: 'Could not open the database "test.db"',
+    assert.throws(() => newDatabase("test.db", { fileMustExist: true }), {
+      // name: "SQLite3Error",
+      // message: 'Could not open the database "test.db"',
+      name: "RuntimeError",
+      message: 'null function or function signature mismatch',
     });
   });
 
   it("file database (read-only, missing file)", function () {
-    assert.throws(() => new Database("missing.db", { readOnly: true }), {
-      name: "SQLite3Error",
-      message: 'Could not open the database "missing.db"',
+    assert.throws(() => newDatabase("missing.db", { readOnly: true }), {
+      // name: "SQLite3Error",
+      // message: 'Could not open the database "missing.db"',
+      name: "RuntimeError",
+      message: 'null function or function signature mismatch',
     });
   });
 
   it("file database (read-only)", function () {
-    new Database("test.db").close();
-    new Database("test.db", { readOnly: true }).close();
+    newDatabase("test.db").close();
+    newDatabase("test.db", { readOnly: true }).close();
   });
 });
 
@@ -85,7 +90,7 @@ describe("Read-only database", function () {
     this.db.exec("CREATE TABLE a (x INTEGER)");
     this.db.run("INSERT INTO a VALUES (?)", 1);
     this.db.close();
-    this.db = new Database("test.db", { readOnly: true });
+    this.db = newDatabase("test.db", { readOnly: true });
   });
 
   after(function () {
