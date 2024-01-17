@@ -86,13 +86,13 @@ download: $(SQLITE_SRC_FILES)
 
 $(SQLITE_SRC_FILES):
 	mkdir -p sqlite-src/tmp
-	curl -LsSf '$(SQLITE_URL)' -o sqlite-src/sqlite.zip
+	test -f sqlite-src/sqlite.zip || curl -LsSf '$(SQLITE_URL)' -o sqlite-src/sqlite.zip
 	# verify checksum
 	diff -q <(echo $(SQLITE_HASH)) \
 		<(echo $$(openssl dgst -sha3-256 sqlite-src/sqlite.zip | awk '{print $$NF}'))
 	# unpack required files
 	unzip -u sqlite-src/sqlite.zip -d sqlite-src/tmp/
-	mv $$(find sqlite-src/tmp/ -name sqlite3.h) sqlite-src/
-	mv $$(find sqlite-src/tmp/ -name sqlite3.c) sqlite-src/
-	rm -rf sqlite-src/sqlite.zip sqlite-src/tmp
+	cp $$(find sqlite-src/tmp/ -name sqlite3.h) sqlite-src/
+	cp $$(find sqlite-src/tmp/ -name sqlite3.c) sqlite-src/
+	#rm -rf sqlite-src/sqlite.zip sqlite-src/tmp
 	touch sqlite-src/sqlite3.{h,c}
