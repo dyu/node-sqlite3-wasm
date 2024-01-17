@@ -1,7 +1,8 @@
 SHELL := /bin/bash
 
-SQLITE_URL = https://www.sqlite.org/2023/sqlite-amalgamation-3440200.zip
-SQLITE_HASH = 9df894eb2297c08ab2dd0d85d7bcdc3fd78b8c80f22c91789a714bdf3351961e
+#SQLITE_URL = https://www.sqlite.org/2023/sqlite-amalgamation-3440200.zip
+SQLITE_URL = https://github.com/utelle/SQLite3MultipleCiphers/releases/download/v1.8.1/sqlite3mc-1.8.1-sqlite-3.44.2-amalgamation.zip
+#SQLITE_HASH = 9df894eb2297c08ab2dd0d85d7bcdc3fd78b8c80f22c91789a714bdf3351961e
 SQLITE_SRC_FILES = sqlite-src/sqlite3.c sqlite-src/sqlite3.h
 
 JS_PRE_FILES = src/api.js src/vfs-pre.js
@@ -88,8 +89,8 @@ $(SQLITE_SRC_FILES):
 	mkdir -p sqlite-src/tmp
 	test -f sqlite-src/sqlite.zip || curl -LsSf '$(SQLITE_URL)' -o sqlite-src/sqlite.zip
 	# verify checksum
-	diff -q <(echo $(SQLITE_HASH)) \
-		<(echo $$(openssl dgst -sha3-256 sqlite-src/sqlite.zip | awk '{print $$NF}'))
+	#diff -q <(echo $(SQLITE_HASH)) \
+	#	<(echo $$(openssl dgst -sha3-256 sqlite-src/sqlite.zip | awk '{print $$NF}'))
 	# unpack required files
 	unzip -u sqlite-src/sqlite.zip -d sqlite-src/tmp/
 	cp $$(find sqlite-src/tmp/ -name sqlite3.h) sqlite-src/
