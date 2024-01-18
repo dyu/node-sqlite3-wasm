@@ -12,6 +12,6 @@ npm version $VERSION --message "[release] $VERSION"
 
 # publish
 git push origin refs/tags/v$VERSION
-git push -u origin mc
+git push -u origin `git rev-parse --abbrev-ref HEAD`
 npm publish --access public
 echo "Released $VERSION"
